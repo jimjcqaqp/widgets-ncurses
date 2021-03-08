@@ -24,6 +24,7 @@ Dialog::Dialog(){
 
 int Dialog::start(){
 	curs_set(0);
+	noecho();
 	int option = 0;
 	int i;
 	// Dejamos de la height por el tamaño de body
@@ -128,13 +129,16 @@ int Dialog::start(){
 	
 	curs_set(1);
 
+	echo();
 	return option;
 }
 
 void Dialog::addlinebody(std::string line){
 	body.push_back(line);
 }
-Dialog::~Dialog(){}
+Dialog::~Dialog(){
+	echo();
+}
 
 /////////////////////////////////////////////////
 /*
@@ -168,5 +172,5 @@ int main(){
 	std::cout << index << std::endl;
 
 	return 0;
-}*/
-
+}
+*/ 

@@ -5,17 +5,19 @@
 #include <boost/format.hpp>
 #include <vector>
 
-class Menu{
+class Table{
 	public:
-		Menu();
-		~Menu();
+		Table();
+		~Table();
 
 		int start();
 		int resume();
 		void resetkey();
 
+		void addrow(std::string col, int width);
+		void addcolumn(std::vector<std::string>);
+
 		void clear();
-		void add(std::string);
 		void addkey(int key);
 		void addaction(void (*)(int, void *), void *);
 		bool running();
@@ -24,7 +26,12 @@ class Menu{
 		bool vc;
 		bool hc;
 		
-		std::vector<std::string> options;
+		// std::vector<std::string> options;
+		std::vector<std::string> rownames;
+		std::vector<int> rowwidth;
+		std::vector< std::vector<std::string> > cols;
+
+		///////////////////////////////////
 		std::vector<int> keys;
 		std::vector<void (*)(int, void *)> iter_actions;
 		std::vector<void *> ptr_data;
@@ -39,6 +46,7 @@ class Menu{
 		MENU *menu;
 		
 		std::vector<std::string> options_front;
+
 		void active_iter_actions();
 };
 

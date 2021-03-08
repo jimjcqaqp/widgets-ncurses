@@ -15,6 +15,11 @@ typedef enum{
 	DIALOG_ALIGN_RIGHT
 } DIALOG_BODY_ALIGN;
 
+typedef enum{
+	DIALOG_OK = 0,
+	DIALOG_CANCEL = 1
+} DIALOG_RESPONSE;
+
 class Dialog{
 	public:
 		int x, y, w, h;
