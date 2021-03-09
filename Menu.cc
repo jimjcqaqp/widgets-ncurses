@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include <curses.h>
 
 #define DEFAULT_WIDTH 20
 
@@ -101,8 +102,8 @@ int Menu::start(){
 
 	if(header.size() != 0){
 		mvwaddch(win, 2, 0, ACS_LTEE);
-		mvwhline(win, 2, 1, ACS_HLINE, width - 2);
-		mvwaddch(win, 2, width - 1, ACS_RTEE);
+ 		mvwhline(win, 2, 1, ACS_HLINE, width - 2);
+ 		mvwaddch(win, 2, width - 1, ACS_RTEE);
 		mvwprintw(win, 1, (width - header.size()) / 2, header.c_str());
 	}
 	if(footer.size() != 0){
@@ -172,7 +173,7 @@ int Menu::resume(){
 	//	return -1;
 	curs_set(0);
 	noecho();
-	box(win, 0, 0);
+	// box(win, 0, 0);
 	wrefresh(win);
 	int c;
 
@@ -229,7 +230,8 @@ void Menu::active_iter_actions(){
 		int index = item_index(select_item);
 		iter_actions[i](index, ptr_data[i]);
 	}
-	box(win, 0, 0);	
+	// box(win, 0, 0);	
+	redrawwin(win);
 	wrefresh(win);
 }
 void Menu::addaction(void (*newaction)(int, void *), void *data){
@@ -319,4 +321,4 @@ int main(){
 
 	endwin();
 	return 0;
-}*/  
+}*/

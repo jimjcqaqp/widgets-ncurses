@@ -1,5 +1,6 @@
 #include "Menu.h"
 #include "Dialog.h"
+#include <unistd.h>
 
 /*
  *	He visto que hay un problema al usar la libreria "menu.h" y las clases

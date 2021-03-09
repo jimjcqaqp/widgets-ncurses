@@ -1,4 +1,5 @@
 #include "Table.h"
+#include <curses.h>
 #include <string>
 
 #define DEFAULT_WIDTH 20
@@ -135,7 +136,7 @@ int Table::start(){
 	post_menu(menu);
 	wrefresh(win);
 
-	// active_iter_actions();
+	active_iter_actions();
 	int c;
 	while((c = wgetch(win)) != 10){
 		bool keyactive = false;
@@ -154,19 +155,19 @@ int Table::start(){
 		switch(c){
 			case KEY_DOWN: 
 				menu_driver(menu, REQ_DOWN_ITEM); 
-				// active_iter_actions();
+				active_iter_actions();
 				break;
 			case KEY_UP:
 				menu_driver(menu, REQ_UP_ITEM);
-				// active_iter_actions();
+				active_iter_actions();
 				break;
 			case KEY_NPAGE:
 				menu_driver(menu, REQ_SCR_DPAGE);
-				// active_iter_actions();
+				active_iter_actions();
 				break;
 			case KEY_PPAGE:
 				menu_driver(menu, REQ_SCR_UPAGE);
-				// active_iter_actions();
+				active_iter_actions();
 				break;
 		}
 		wrefresh(win);
@@ -192,7 +193,7 @@ int Table::resume(){
 	//	return -1;
 	curs_set(0);
 	noecho();
-	box(win, 0, 0);
+	// box(win, 0, 0);
 	wrefresh(win);
 	int c;
 
@@ -241,7 +242,6 @@ int Table::resume(){
 }
 
 void Table::active_iter_actions(){
-	return;
 	for(int i = 0; i < (int)iter_actions.size(); ++i)
 	{
 		ITEM *select_item = current_item(menu);
@@ -250,7 +250,8 @@ void Table::active_iter_actions(){
 		int index = item_index(select_item);
 		iter_actions[i](index, ptr_data[i]);
 	}
-	box(win, 0, 0);	
+	// box(win, 0, 0);	
+	redrawwin(win);
 	wrefresh(win);
 }
 void Table::addaction(void (*newaction)(int, void *), void *data){
@@ -266,11 +267,11 @@ void Table::addcolumn(std::vector<std::string> col){
 }
 
 Table::~Table(){
-	/*
+
 	if(items != NULL){
-		for(int i = 0; i < (int)options.size(); ++i)
+		for(int i = 0; i < (int)cols.size(); ++i)
 			free_item(items[i]);
-	}*/ 
+	} 
 	if(menu != NULL){
 		unpost_menu(menu);
 		free_menu(menu);
@@ -303,8 +304,11 @@ bool Table::running(){
 		return false;
 	return true;
 }
- 
+
 // EXAMPLE
+/*
+#include "Dialog.h"
+
 void init(){
 	Table table;
 	table.vc = true;
@@ -353,14 +357,28 @@ void init(){
 	cols.push_back("70");
 	table.addcolumn(cols);
 	cols.clear();
-
 	table.start();
+
+	Dialog d;
+	d.hc = true;
+	d.vc = true;
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.addlinebody("DDDDDDDDDDDDDDDDDDDDDDDDD");
+	d.start();
+
+	table.resume();	
 }
 int main(){
 	initscr();
 	init();
 	endwin();
 	return 0;
-}
-
-
+}*/
