@@ -281,43 +281,4 @@ bool Menu::running(){
 }
 
 ///////////////////////////////////////////////////////////// 
-/*
-void function(int indice, void *data){
-	const char *subdata = (const char *)data;
-	mvwprintw(stdscr, 1, 1, std::to_string(indice).c_str());
-	mvwprintw(stdscr, 2, 1, subdata);
-	refresh();
-}
-void function1(int indice, void *data){
-	const char *subdata = (const char *)data;
-	mvwprintw(stdscr, 3, 1, std::to_string(indice).c_str());
-	mvwprintw(stdscr, 4, 1, subdata);
-	refresh();
-}
-int main(){
-	initscr();
-	cbreak();
-	
-	Menu menu;
-	
-	for(int i = 0; i < 10; ++i){
-		menu.add("Option " + std::to_string(i + 1));
-	} 
 
-	menu.addaction(&function, (void *)"FUNCION 01");
-	menu.addaction(&function1, (void *)"FUNCION 02");
-
-	menu.vc = true;
-	menu.hc = true;
-	menu.header = "Selecione una opcion";
-	menu.w = 40;
-	menu.h = 6;
-	menu.footer = "10 opciones";
-	// menu.addkey('q');
-	// menu.h = 5;
-
-	menu.start();
-
-	endwin();
-	return 0;
-}*/

@@ -138,37 +138,3 @@ Dialog::~Dialog(){
 	echo();
 }
 
-/////////////////////////////////////////////////
-/*
-int main(){
-	initscr();
-
-	Dialog dialog;
-	dialog.vc = true;
-	dialog.hc = true;
-	dialog.type = DIALOG_INFORMATION;
-	dialog.align = DIALOG_ALIGN_RIGHT;	
-	dialog.header = "Hello";
-	dialog.w = 50;
-
-	dialog.addlinebody("Usted no aprende");
- 	dialog.addlinebody("verdad");
-	dialog.addlinebody("No lo se doc");
-	dialog.addlinebody("Jimmy Josue Chullunquia Quispe");
-
-	int index = dialog.start();
-
-	dialog.type = DIALOG_QUESTION;
-	dialog.start();
-
-	dialog.align = DIALOG_ALIGN_CENTER;
-	dialog.addlinebody("Ultima linea");
-	dialog.start();	
-
-	endwin();
-
-	std::cout << index << std::endl;
-
-	return 0;
-}
-*/ 
