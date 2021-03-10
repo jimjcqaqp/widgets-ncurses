@@ -1,6 +1,4 @@
 #include "Table.h"
-#include <curses.h>
-#include <string>
 
 #define DEFAULT_WIDTH 20
 

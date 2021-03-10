@@ -1,7 +1,4 @@
 #include "Form.h"
-#include <curses.h>
-#include <map>
-#include <string.h>
 
 #define DEFAULT_WIDTH	20
 
@@ -156,19 +153,21 @@ bool Form::start(){
 				}
 				wattroff(wini, A_BOLD);
 				wattroff(wini, A_ITALIC);
+				responses.push_back(text);
 				break;
 			}
 			line += 3;
 		}else{ 
 			mm[i] = Menu();
-			for(int k = 0; k < listselect[i].size(); ++k)
+			for(int k = 0; k < (int)listselect[i].size(); ++k)
 				mm[i].add(listselect[i][k]);
 			mm[i].w = lengths[i];
 			mm[i].h = 2;
 			mm[i].x = posx + 1;
 			mm[i].y = posy + line + 2;
-			mm[i].start();
+			int index = mm[i].start();
 			line += 6;
+			responses.push_back(std::to_string(index));
 		}
 	}	
 	// wclear(win);
@@ -178,6 +177,7 @@ bool Form::start(){
 }
 
 ///////////////////// EXAMPLE ////////////////////
+/*
 #include "Dialog.h"
 void init(){
 	Form form;
@@ -213,4 +213,4 @@ int main(){
 	endwin();	
 	return 0;
 }
- 
+*/  

@@ -3,6 +3,8 @@
 #include "Menu.h"
 #include <menu.h>
 #include <map>
+#include <string.h>
+
 
 typedef enum{
 	INPUT_NUMBER = 0,

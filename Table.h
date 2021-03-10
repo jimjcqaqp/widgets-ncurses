@@ -4,6 +4,7 @@
 #include <iostream>
 #include <boost/format.hpp>
 #include <vector>
+#include <string>
 
 class Table{
 	public:

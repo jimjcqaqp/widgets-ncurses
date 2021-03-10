@@ -1,5 +1,4 @@
 #include "Menu.h"
-#include <curses.h>
 
 #define DEFAULT_WIDTH 20
 

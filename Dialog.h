@@ -3,6 +3,8 @@
 #include <menu.h>
 #include <iostream>
 #include <vector>
+#include <boost/format.hpp>
+
 
 typedef enum{
 	DIALOG_QUESTION = 0,

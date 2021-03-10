@@ -1,6 +1,4 @@
 #include "Dialog.h"
-#include <menu.h>
-#include <boost/format.hpp>
 
 #define DEFAULT_WIDTH 30
 
