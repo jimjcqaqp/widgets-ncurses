@@ -26,12 +26,16 @@ class Form{
 		std::string header;
 		std::string footer;
 
-	private:
 		std::vector<std::string> responses;
+		
+		void clear();
+
+	private:
 		std::vector<std::string> questions;
 		std::vector<FORM_INPUT_TYPE> types;
 		std::vector<int> lengths;
-		
+		WINDOW *win;	
 		std::map<int, std::vector<std::string> > listselect;
+		std::map<int, Menu> mm;
 };
 

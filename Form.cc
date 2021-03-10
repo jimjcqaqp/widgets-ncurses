@@ -10,10 +10,26 @@ Form::Form(){
 	y = 0;
 	w = DEFAULT_WIDTH;
 	h = 0;
+	win = NULL;
 }
 
-Form::~Form(){}
+Form::~Form(){
+	if(win != NULL)
+	{
+		wclear(win);
+		wrefresh(win);
+		delwin(win);
+		win = NULL;
+	}
+}
 
+void Form::clear(){
+	if(win != NULL)
+	{
+		wclear(win);
+		wrefresh(win);
+	}
+}
 
 void Form::addInput(std::string question, FORM_INPUT_TYPE type, int len){
 	this->questions.push_back(question);
@@ -55,7 +71,7 @@ bool Form::start(){
 	else
 		posy = y;
 	
-	WINDOW *win = newwin(height + offset_header + offset_footer, 
+	win = newwin(height + offset_header + offset_footer, 
 											 width, posy, posx);	
 	box(win, 0, 0);	
 	keypad(win, FALSE);
@@ -93,8 +109,8 @@ bool Form::start(){
 
 	wrefresh(win);
 	// Respuestas
+	mm.clear();
 	line = offset_header - 1;
-	std::map<int, Menu> mm;
 	for(int i = 0; i < (int) types.size(); ++i){
 		char text[1024];
 
@@ -155,18 +171,15 @@ bool Form::start(){
 			line += 6;
 		}
 	}	
-
-	wclear(win);
-	wrefresh(win);
-	delwin(win);
-	
+	// wclear(win);
+	// wrefresh(win);
+	// delwin(win);
 	return true;
 }
 
 ///////////////////// EXAMPLE ////////////////////
-int main(){
-	initscr();
-
+#include "Dialog.h"
+void init(){
 	Form form;
 	form.vc = true;
 	form.hc = true;
@@ -178,9 +191,26 @@ int main(){
 	form.addInput("Password", INPUT_PASSWORD, 20);
 	form.addInput("Edad", INPUT_STRING, 20);
 
+	std::vector<std::string> ops;
+	ops.push_back("Masculino");
+	ops.push_back("Femenino");
+	ops.push_back("Otros");
+	form.addSelect("Genero?", ops, 30);
+
 	form.start();
 
+	Dialog d;
+	d.hc = true;
+	d.header = "Selecione";
+	d.addlinebody("Test");
+	d.addlinebody("Form");
+	d.start();
+}
+
+int main(){
+	initscr();
+	init();
 	endwin();	
 	return 0;
 }
-
+ 
