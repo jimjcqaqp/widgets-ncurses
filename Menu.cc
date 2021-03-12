@@ -15,6 +15,8 @@ Menu::Menu(){
 	win = NULL;
 	menu = NULL;
 	items = NULL;
+
+	parent = stdscr;
 }
 
 int Menu::start(){
@@ -34,13 +36,17 @@ int Menu::start(){
 		win = NULL;
 	}
 	/***************/
-	int index = 0;
+	int index = -1;
 	int i = 0;
 // 	if(options.size() == 0)
 //		return -1;
-
+	int globalx, globaly;
 	int globalw, globalh;
-	getmaxyx(stdscr, globalh, globalw);
+	getmaxyx(parent, globalh, globalw);
+ 	getbegyx(parent, globaly, globalx);
+
+	// mvwprintw(stdscr, 0, 0, "w=%i h=%i x=%i y=%i", globalw, globalh, globalx, globaly);
+	// wrefresh(stdscr);
 
 	int posx = 0;
 	int posy = 0;
@@ -67,9 +73,8 @@ int Menu::start(){
 	else
 		posy = y;
 
-
 	// Iniciando WINDOW
-	win = newwin(height + offset_footer + offset_header, width, posy, posx);
+	win = newwin(height + offset_footer + offset_header, width, posy + globaly, posx + globalx);
 	keypad(win, TRUE);
 	
 	// Iniciando ITEM
@@ -172,11 +177,14 @@ int Menu::resume(){
 	//	return -1;
 	curs_set(0);
 	noecho();
-	// box(win, 0, 0);
-	wrefresh(win);
-	int c;
 
+	redrawwin(win);
+	// box(win, 0, 0);
+	int c;
+	post_menu(menu);
 	active_iter_actions();
+	wrefresh(win);
+
 	while((c = wgetch(win)) != 10){
 		bool keyactive = false;
 		for(i = 0; i < (int)keys.size(); ++i){

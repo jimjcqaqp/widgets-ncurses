@@ -1,4 +1,5 @@
 #include "Form.h"
+#include <curses.h>
 
 #define DEFAULT_WIDTH	20
 
@@ -8,6 +9,9 @@ Form::Form(){
 	w = DEFAULT_WIDTH;
 	h = 0;
 	win = NULL;
+	hc = false;
+	vc = false;
+	parent = stdscr;
 }
 
 Form::~Form(){
@@ -45,10 +49,10 @@ void Form::addSelect(std::string question,
 }
 
 bool Form::start(){
-		
-	int globalx = 0, globaly;
-	getmaxyx(stdscr, globaly, globalx);	
-
+	int globalx = 0, globaly = 0;	
+	int globalw = 0, globalh = 0;
+	getmaxyx(parent, globalh, globalw);	
+	getbegyx(parent, globaly, globalx);
 
 	int posx = x, posy = y;
 	int width = w, height = 0;	
@@ -60,16 +64,17 @@ bool Form::start(){
 	height += (listselect.size() * 3);
 
 	if(hc == true)	
-		posx = (globalx - width) / 2;
+		posx = (globalw - width) / 2;
 	else
-		posx = w;
+		posx = x;
+	
 	if(vc == true)
-		posy = (globaly - height) / 2;
+		posy = (globalh - (height + offset_footer + offset_header)) / 2;
 	else
 		posy = y;
 	
 	win = newwin(height + offset_header + offset_footer, 
-											 width, posy, posx);	
+											 width, posy + globaly, posx + globalx);	
 	box(win, 0, 0);	
 	keypad(win, FALSE);
 
@@ -123,7 +128,7 @@ bool Form::start(){
 				wattron(wini, A_BOLD);
 				wattron(wini, A_ITALIC);
 				if(types[i] == INPUT_PASSWORD) noecho();
-				mvwgetstr(wini, 0, 0, text);	
+				mvwgetstr(wini, 0, 0, text);
 				if(types[i] == INPUT_PASSWORD) echo();
 				wattroff(wini, A_BOLD);
 				wattroff(wini, A_ITALIC);
@@ -153,7 +158,8 @@ bool Form::start(){
 				}
 				wattroff(wini, A_BOLD);
 				wattroff(wini, A_ITALIC);
-				responses.push_back(text);
+				responses[i] = text;
+
 				break;
 			}
 			line += 3;
@@ -163,8 +169,8 @@ bool Form::start(){
 				mm[i].add(listselect[i][k]);
 			mm[i].w = lengths[i];
 			mm[i].h = 2;
-			mm[i].x = posx + 1;
-			mm[i].y = posy + line + 2;
+			mm[i].x = posx + 1 + globalx;
+			mm[i].y = posy + line + 2 + globaly;
 			int index = mm[i].start();
 			line += 6;
 			responses.push_back(std::to_string(index));

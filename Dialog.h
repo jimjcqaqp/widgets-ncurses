@@ -40,6 +40,8 @@ class Dialog{
 		DIALOG_TYPE type;
 		DIALOG_BODY_ALIGN align;
 
+		WINDOW *parent;
+
 	private:
 		WINDOW *win;
 		MENU *menu;

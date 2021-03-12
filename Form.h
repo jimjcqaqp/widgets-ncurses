@@ -31,6 +31,7 @@ class Form{
 		std::vector<std::string> responses;
 		
 		void clear();
+		WINDOW *parent;
 
 	private:
 		std::vector<std::string> questions;

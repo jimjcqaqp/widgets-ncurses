@@ -33,6 +33,8 @@ class Menu{
 		std::string header;
 		std::string footer;
 
+		WINDOW *parent;
+
 	private:
 		WINDOW *win;
 		ITEM **items;

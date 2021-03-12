@@ -15,6 +15,7 @@ Table::Table(){
 	win = NULL;
 	menu = NULL;
 	items = NULL;
+	parent = stdscr;
 }
 
 int Table::start(){
@@ -39,8 +40,10 @@ int Table::start(){
 // 	if(options.size() == 0)
 //		return -1;
 
+	int globalx, globaly;
 	int globalw, globalh;
-	getmaxyx(stdscr, globalh, globalw);
+	getmaxyx(parent, globalh, globalw);
+	getbegyx(parent, globaly, globalx);
 
 	int posx = 0;
 	int posy = 0;
@@ -74,7 +77,7 @@ int Table::start(){
 		posy = y;
 
 	// Iniciando WINDOW
-	win = newwin(height + offset_footer + offset_header, width, posy, posx);
+	win = newwin(height + offset_footer + offset_header, width, posy + globaly, posx + globalx);
 	keypad(win, TRUE);
 	
 	// Iniciando ITEM

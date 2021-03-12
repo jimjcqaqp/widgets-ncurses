@@ -18,6 +18,8 @@ Dialog::Dialog(){
 	win = NULL;
 	menu = NULL;
 	items = NULL;
+
+	parent = stdscr;
 }
 
 int Dialog::start(){
@@ -34,15 +36,18 @@ int Dialog::start(){
 	int offset_header = (header.size() == 0)? 1 : 3;
 	int offset_footer = 3;
 
+	int globalx = 0, globaly = 0;
 	int globalw = 0, globalh = 0;
-	getmaxyx(stdscr, globalh, globalw);
+	getmaxyx(parent, globalh, globalw);
+	getbegyx(parent, globaly, globalx);
 
 	if(hc == true)
 		posx = (globalw - w) / 2;
 	if(vc == true)
 		posy = (globalh - (height + offset_header + offset_footer)) / 2;
-	
-	win = newwin(height + offset_header + offset_footer, width, posy, posx);
+
+	win = newwin(height + offset_header + offset_footer, width, 
+							 posy + globaly, posx + globalx);
 	keypad(win, TRUE);
 
 	box(win, 0, 0);
@@ -126,7 +131,6 @@ int Dialog::start(){
 	win = NULL;
 	
 	curs_set(1);
-
 	echo();
 	return option;
 }
