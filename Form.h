@@ -19,6 +19,7 @@ class Form{
 		~Form();
 
 		bool start();
+		void addquittext(std::string);
 		void addInput(std::string question, FORM_INPUT_TYPE type, int len);
 		void addSelect(std::string question, std::vector<std::string> options, int width);
 
@@ -40,5 +41,7 @@ class Form{
 		WINDOW *win;	
 		std::map<int, std::vector<std::string> > listselect;
 		std::map<int, Menu> mm;
+
+		std::vector<std::string> quittext;
 };
 

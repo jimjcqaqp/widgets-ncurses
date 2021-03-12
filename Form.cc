@@ -32,6 +32,10 @@ void Form::clear(){
 	}
 }
 
+void Form::addquittext(std::string text){
+	quittext.push_back(text);
+}
+
 void Form::addInput(std::string question, FORM_INPUT_TYPE type, int len){
 	this->questions.push_back(question);
 	this->types.push_back(type);
@@ -123,8 +127,8 @@ bool Form::start(){
 
 			while(true)
 			{
-				wini = derwin(win, 1, lengths[i] + 1, line + 2, 1);
-			
+				wini = derwin(win, 1, lengths[i] + 1, line + 2, 1);	
+				// keypad(wini, FALSE);
 				wattron(wini, A_BOLD);
 				wattron(wini, A_ITALIC);
 				if(types[i] == INPUT_PASSWORD) noecho();
@@ -174,6 +178,13 @@ bool Form::start(){
 			int index = mm[i].start();
 			line += 6;
 			responses.push_back(std::to_string(index));
+		}
+
+		for(int i = 0; i < (int) quittext.size(); ++i){
+			if(strcmp(text, quittext[i].c_str()) == 0)
+			{
+				return false;
+			}
 		}
 	}	
 	// wclear(win);
