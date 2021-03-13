@@ -22,6 +22,21 @@ Teacher Teacher::find(int id){
 	sqlite3_close(db);
 	return t;	
 }
+// FIND CODE
+Teacher Teacher::findcode(std::string code){
+	std::string ssql;
+	ssql = "SELECT * FROM teachers WHERE code='?'";
+	boost::replace_first(ssql, "?", code);
+
+	Teacher t;
+	t.id = 0;
+	sqlite3 *db;
+	if(sqlite3_open(PATH, &db))
+		return t;
+	sqlite3_exec(db, ssql.c_str(), &callback_find, &t, NULL);
+	sqlite3_close(db);
+	return t;	
+}
 // ALL
 std::vector<Teacher> Teacher::all(){
 	std::vector<Teacher> ts;

@@ -10,6 +10,7 @@ class Student{
 		Student();
 		~Student();
 		static Student find(int id);
+		static Student findcode(std::string code);
 		static std::vector<Student> all(); 
 		bool save();
 		// void remove();

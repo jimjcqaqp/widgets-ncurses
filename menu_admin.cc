@@ -14,7 +14,7 @@
 #define GRADE_MIN	10
 #define GRADE_MAX 20
 
-WINDOW *win_parent;
+static WINDOW *win_parent;
 
 static void add_teacher();
 static void add_course ();
@@ -131,10 +131,11 @@ void add_teacher(){
 		dialog.start();
 	}
 }
-void add_course(){
+void add_course()
+{
 	Form f;
 	f.parent = win_parent;
-	f.x = 33;	
+	f.x = 33;
 	f.y = 3;
 	f.w = 50;
 	f.header = "Nuevo Curso";
@@ -235,7 +236,6 @@ void add_student(){
 		dialog.addlinebody("2. Otra aplicacion esta usando la DB");
 		dialog.start();
 	}
-
 }
 void view_teachers(){
 
@@ -245,11 +245,13 @@ void view_teachers(){
 	t.parent = win_parent;
 	t.addrow("Codigo", 15);
 	t.addrow("Nombre", 36);
-	t.h = 13;
+	t.h = 14;
 	t.x = 33;
 	t.y = 3;
 	t.header = "Todos los profesores";
-	t.footer = "Total de profesores " + std::to_string(teachers.size());
+	t.footer = "Total de profesores " + std::to_string(teachers.size()) + " (e) editar";
+	t.addkey('e');
+	t.addkey('E');
 
 	for(int i = 0; i < (int) teachers.size(); ++i){
 		std::vector<std::string> viewt;
@@ -258,7 +260,57 @@ void view_teachers(){
 		t.addcolumn(viewt);
 	}
 
-	t.start();
+	int index = t.start();
+	if(teachers.size() == 0)
+		return;
+
+	if(t.keypress == 'e' ||  t.keypress == 'E'){
+		t.clear();	
+		//////////// edit /////////////
+		Form f;
+		f.parent = win_parent;
+		f.x = 34;	
+		f.y = 3;
+		f.w = 50;
+		f.header = "Editar " + teachers[index].name;
+		f.footer = "(q) para cancelar - (d) default";
+		f.addquittext("q");
+		f.addInput("Codigo del profesor (e)", INPUT_STRING, 10);
+		f.addInput("Nombre del profesor (e)", INPUT_STRING, 25);
+		
+		if(f.start() == false)
+			return;
+
+		Teacher newteacher = Teacher::find(teachers[index].id);
+		if(f.responses[0] != "d") newteacher.code = f.responses[0];
+		if(f.responses[1] != "d") newteacher.name = f.responses[1];
+
+		bool response = newteacher.save();
+
+		Dialog dialog;
+		dialog.w = 40;
+		dialog.hc = true;
+		dialog.vc = true;
+		dialog.type = DIALOG_INFORMATION;
+
+		if(response == true)
+		{
+			dialog.header = "Completado";
+			dialog.addlinebody("Se ha editado correctamente");
+			dialog.addlinebody("al profesor");
+			dialog.addlinebody(f.responses[1]);
+			dialog.start();
+		}
+		else
+		{
+			dialog.header = "ERROR";
+			dialog.align = DIALOG_ALIGN_LEFT;
+			dialog.addlinebody("1. El codigo puede estar en uso");
+			dialog.addlinebody("2. Otra aplicacion esta usando la DB");
+			dialog.start();
+		}
+		///////////////////////////////	
+	}
 }
 void view_courses(){
 	std::vector<Course> courses = Course::all();
@@ -268,13 +320,15 @@ void view_courses(){
 	t.addrow("Codigo", 10);
 	t.addrow("Nombre", 20);
 	t.addrow("Dependencia", 20);
-	t.h = 13;
+	t.h = 14;
 	t.x = 33;
 	t.y = 3;
+	t.addkey('e');
+	t.addkey('E');
 	t.header = "Todos los cursos";
-	t.footer = "Total de cursos " + std::to_string(courses.size());
+	t.footer = "Total de cursos " + std::to_string(courses.size()) + " (e) editar";
 	
-	for(int i = 0; i < courses.size(); ++i)
+	for(int i = 0; i < (int)courses.size(); ++i)
 	{
 		std::vector<std::string> col;
 		col.push_back(courses[i].code);
@@ -283,7 +337,77 @@ void view_courses(){
 		col.push_back(coursedep.name);
 		t.addcolumn(col);
 	}
-	t.start();
+	int index = t.start();
+	
+	if(t.keypress == 'e' || t.keypress == 'E')
+	{
+		t.clear();
+		/////////////////////////////////
+		Form f;
+		f.parent = win_parent;
+		f.x = 33;	
+		f.y = 3;
+		f.w = 50;
+		f.header = "Editar " + courses[index].name;
+		f.footer = "(q) para cancelar";
+		f.addquittext("q");
+		f.addInput("Codigo del curso", INPUT_STRING, 10);
+		f.addInput("Nombre del curso", INPUT_STRING, 25);
+		
+		std::vector<Teacher> teachers = Teacher::all();
+		std::vector<std::string> viewteachers;
+		viewteachers.push_back("DEFAULT");
+		for(int i = 0; i < (int) teachers.size(); ++i)
+			viewteachers.push_back(teachers[i].name);
+		f.addSelect("Encargado del curso", viewteachers, 30);
+		if(f.start() == false){
+			return;
+		}
+
+		// prepare dialog
+		Dialog dialog;
+		dialog.w = 40;
+		dialog.hc = true;
+		dialog.vc = true;
+		dialog.type = DIALOG_INFORMATION;
+
+		bool response = false;
+		if(teachers.size() != 0)
+		{
+			Course course = Course::find(courses[index].id);
+		  if(f.responses[0] != "d") course.code = f.responses[0];
+			if(f.responses[1] != "d") course.name = f.responses[1];
+			if(f.responses[2] != "0") course.teacher = teachers[ atoi(f.responses[2].c_str()) - 1 ];
+			response = course.save();
+		}
+		else
+		{
+			dialog.header = "Error";
+			dialog.addlinebody("No se pudo continuar puede continuar");
+			dialog.addlinebody("por que no hay profesores");
+			dialog.start();
+			return;
+		}
+
+		if(response == true)
+		{
+			dialog.header = "Completado";
+			dialog.addlinebody("Se ha editado correctamente");
+			dialog.addlinebody("el curso");
+			// dialog.addlinebody(f.responses[1]);
+			dialog.start();
+		}
+		else
+		{
+			dialog.header = "ERROR";
+			dialog.align = DIALOG_ALIGN_LEFT;
+			dialog.addlinebody("1. El codigo puede estar en uso");
+			dialog.addlinebody("2. Otra aplicacion esta usando la DB");
+			dialog.start();
+		}
+
+		/////////////////////////////////
+	}
 }
 void view_students(){
 	std::vector<Student> students = Student::all();
@@ -291,11 +415,13 @@ void view_students(){
 	t.parent = win_parent;
 	t.addrow("Codigo", 15);
 	t.addrow("Nombre", 36);
-	t.h = 13;
+	t.h = 14;
 	t.x = 33;
 	t.y = 3;
 	t.header = "Todos los estudiantes";
-	t.footer = "Total de estudiantes " + std::to_string(students.size());
+	t.footer = "Total de estudiantes " + std::to_string(students.size()) + " (e) editar";
+	t.addkey('e');
+	t.addkey('E');
 
 	for(int i = 0; i < students.size(); ++i)
 	{
@@ -304,7 +430,56 @@ void view_students(){
 		col.push_back(students[i].name);
 		t.addcolumn(col);
 	}
-	t.start();
+	int index = t.start();
+	if(students.size() == 0)
+		return ;
+	if(t.keypress == 'e' || t.keypress == 'E'){
+		t.clear();
+		/////////////////////////////////
+		Form f;
+		f.parent = win_parent;
+		f.x = 33;	
+		f.y = 3;
+		f.w = 50;
+		f.header = "Editar " + students[index].name;
+		f.footer = "(q) cancelar - (d) default";
+		f.addquittext("q");
+		f.addInput("Codigo del estudiante (e)", INPUT_STRING, 10);
+		f.addInput("Nombre del estudiante (e)", INPUT_STRING, 25);
+		if(f.start() == false)
+			return;
+
+		Student student = Student::find(students[index].id);;
+		if(f.responses[0] != "d") student.code = f.responses[0];
+		if(f.responses[1] != "d") student.name = f.responses[1];
+
+		bool response = student.save();
+
+		Dialog dialog;
+		dialog.w = 40;
+		dialog.hc = true;
+		dialog.vc = true;
+		dialog.type = DIALOG_INFORMATION;
+
+		if(response == true)
+		{
+			dialog.header = "Completado";
+			dialog.addlinebody("Se ha editado correctamente");
+			dialog.addlinebody("al estudiante");
+			dialog.addlinebody(f.responses[1]);
+			dialog.start();
+		}
+		else
+		{
+			dialog.header = "ERROR";
+			dialog.align = DIALOG_ALIGN_LEFT;
+			dialog.addlinebody("1. El codigo puede estar en uso");
+			dialog.addlinebody("2. Otra aplicacion esta usando la DB");
+			dialog.start();
+		}
+
+		/////////////////////////////////	
+	}
 }
 void register_student(){
 	std::vector<Student> students = Student::all();
@@ -371,6 +546,7 @@ void register_student(){
 			derr.hc = derr.vc = true;
 			derr.w = 40;
 			derr.align = DIALOG_ALIGN_LEFT;
+			derr.type = DIALOG_INFORMATION;
 			derr.header = "Error";
 			derr.addlinebody("El curso tiene el requerimiento de");
 			derr.addlinebody(courses[indexcourse].name);
@@ -382,6 +558,7 @@ void register_student(){
 			Dialog derr;
 			derr.parent = win_parent;
 			derr.hc = derr.vc = true;
+			derr.type = DIALOG_INFORMATION;
 			derr.w = 40;
 			derr.align = DIALOG_ALIGN_LEFT;
 			derr.header = "Error";

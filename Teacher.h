@@ -10,6 +10,7 @@ class Teacher{
 		Teacher();
 		~Teacher();
 		static Teacher find(int id);
+		static Teacher findcode(std::string code);
 		static std::vector<Teacher> all(); 
 		bool save();
 		// void remove();

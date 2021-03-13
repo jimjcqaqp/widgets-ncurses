@@ -1,3 +1,6 @@
 #pragma once
 
-void menu_teacher();
+#include "Form.h"
+
+void menu_teacher(Form &formlogin);
+
