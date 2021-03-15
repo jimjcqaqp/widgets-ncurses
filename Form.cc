@@ -129,13 +129,13 @@ bool Form::start(){
 			{
 				wini = derwin(win, 1, lengths[i] + 1, line + 2, 1);	
 				// keypad(wini, FALSE);
-				wattron(wini, A_BOLD);
-				wattron(wini, A_ITALIC);
+				// wattron(wini, A_BOLD);
+				// wattron(wini, A_ITALIC);
 				if(types[i] == INPUT_PASSWORD) noecho();
 				mvwgetstr(wini, 0, 0, text);
 				if(types[i] == INPUT_PASSWORD) echo();
-				wattroff(wini, A_BOLD);
-				wattroff(wini, A_ITALIC);
+				// wattroff(wini, A_BOLD);
+				// wattroff(wini, A_ITALIC);
 
 				if(strlen(text) == 0){
 					wclear(wini);

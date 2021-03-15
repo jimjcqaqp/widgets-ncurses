@@ -549,7 +549,8 @@ void register_student(){
 			derr.type = DIALOG_INFORMATION;
 			derr.header = "Error";
 			derr.addlinebody("El curso tiene el requerimiento de");
-			derr.addlinebody(courses[indexcourse].name);
+			// derr.addlinebody(courses[indexcourse].name);
+			derr.addlinebody(Course::find(courses[indexcourse].course_id).name);
 			derr.addlinebody("Se tiene que matricular");
 			derr.start();
 			return;
@@ -634,6 +635,7 @@ void add_dependency(){
 	if(indexcourse == indexcoursedep){
 		Dialog derr;
 		derr.parent = win_parent;
+		derr.type = DIALOG_INFORMATION;
 		derr.hc = derr.vc = true;
 		derr.w = 40;
 		derr.header = "Error";
@@ -646,6 +648,7 @@ void add_dependency(){
 	course.course_id = courses[indexcoursedep].id;
 	if(course.save() == false){
 		Dialog dialog;
+		dialog.type = DIALOG_INFORMATION;
 		dialog.hc = dialog.vc = true;
 		dialog.parent = win_parent;
 		dialog.w = 40;
@@ -655,6 +658,7 @@ void add_dependency(){
 		return;	
 	}
 	Dialog dialog;
+	dialog.type = DIALOG_INFORMATION;
 	dialog.hc = dialog.vc = true;
 	dialog.parent = win_parent;
 	dialog.w = 40;

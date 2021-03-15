@@ -81,10 +81,10 @@ void view_registration(Student &student)
 		std::vector<std::string> col;
 		Course course = Course::find(gs[i].course_id);
 		col.push_back(course.name);
-		col.push_back( std::to_string(gs[i].grade1) );
-		col.push_back( std::to_string(gs[i].grade2) );
-		col.push_back( std::to_string(gs[i].grade3) );
-		col.push_back( std::to_string(gs[i].average) );
+		col.push_back( gs[i].grade1 == -1? "" : std::to_string(gs[i].grade1) );
+		col.push_back( gs[i].grade2 == -1? "" : std::to_string(gs[i].grade2) );
+		col.push_back( gs[i].grade3 == -1? "" : std::to_string(gs[i].grade3) );
+		col.push_back( gs[i].average == -1? "" : std::to_string(gs[i].average) );
 		t.addcolumn(col);
 	}
 	t.start();
